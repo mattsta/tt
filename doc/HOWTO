@@ -1,0 +1,33 @@
+How to get things working:
+tt_server:start_link(4400, tt_fsm).
+tt_pool:start_link([{"foo", "127.0.0.1", 2020}]).
+
+4400 is the port the proxy is listening on.
+127.0.0.1:2020 is tokyotyrant for database "foo"
+The list passed to tt_pool:start_link/1 is all the tables
+the proxy will activate on startup.  e.g.:
+  [{"foo", "127.0.0.1", 2020},
+   {"bar", "127.0.0.1", 2021},
+   {"baz", "127.0.0.1", 2022}]
+
+
+Try some profiling:
+eprof:start_profiling([whereis(tt_server)]).
+
+eprof:stop_profiling().
+eprof:total_analyse().
+
+
+Try some hipe:
+c(tt_server, [native]), c(tt_pool, [native]), c(tt_fsm, [native]).
+
+
+Try some tracing:
+dbg:tracer(),
+dbg:p(all,[c,sos,sol]).
+dbg:tpl(tt_pool,[{'_',[],[{message,{return_trace}}]}]).
+
+
+Server testing:
+ttserver -port 2020
+tcrtest write -port 4400 localhost 5000

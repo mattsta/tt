@@ -1,0 +1,5 @@
+tt_pool:
+  - Make adding a new server pool part of the gen_server.
+  - Reporting/stats page
+  - Throughput reporting
+
