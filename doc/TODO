@@ -2,4 +2,12 @@ tt_pool:
   - Make adding a new server pool part of the gen_server.
   - Reporting/stats page
   - Throughput reporting
+  - Some sort of on-demand pool lookup service?
+    - If a pool isn't running, put it in a default DB.
+      - If the pool shows up again, apply all data in the default DB
+        back to the regular DB.
+
+application in general:
+  - Make application module (tt_app.erl)
+  - Make appropriate supervisors
 
