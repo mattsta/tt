@@ -26,7 +26,8 @@ init(ClientSocket) ->
 ready(socket_ready, #state{sock=Socket} = State) ->
   inet:setopts(Socket, [{active, once}, {packet, raw}, binary]),
   {ok, {IP, Port}} = inet:peername(Socket),
-  {next_state, ready_for_data, State#state{ip = IP, port = Port}, 3000};
+  % the client can idle, so don't time them out here.
+  {next_state, ready_for_data, State#state{ip = IP, port = Port}, infinity};
 ready(timeout, State) ->
   io:format("Timeout in ready: ~p~n", [State]),
   {stop, normal, State}.
@@ -58,7 +59,7 @@ ready_for_data(finished_parsing_packet,
 %  io:format("current data: ~p; next data: ~p~n", [Data, NextData]),
   {next_state, fetching_data, 
    State#state{packet = <<>>, data = NextData, table_socket_map = NewMap}, 
-   3000};
+   infinity};  % let them idle here too, damnit
 ready_for_data(timeout, State) ->
   error_logger:error_msg("Timeout received from frontend: ~p.~n", [State]),
   {stop, normal, State};
@@ -75,7 +76,7 @@ fetching_data({fetched, Data, _BackendSocket}, #state{sock=Socket} = State) ->
   %%          Request back -> from jack, then from foo.  client expected orignal
   %%          ordering.  Store ordered list of outstanding sockets waiting for?
   gen_tcp:send(Socket, Data),
-  {next_state, fetching_data, State, 3000};
+  {next_state, fetching_data, State, infinity};  % MORE IDLING
 fetching_data(data_in_process, State) ->
   ready_for_data(data_in_process, State);
 fetching_data(timeout, State) ->

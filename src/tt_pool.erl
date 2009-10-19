@@ -58,7 +58,7 @@ insert_gather_queue(TableName) ->
   end.
 
 gather_queue(TableName) ->
-  PreSocks = [socket_for_table(TableName) || _ <- lists:seq(1,20)],
+  PreSocks = [socket_for_table(TableName) || _ <- lists:seq(1,8)],
 
   % emfile means we've gone past our ulimit.  bad.
   OkSocks = [S || S <- PreSocks, S =/= {error, econnrefused},
