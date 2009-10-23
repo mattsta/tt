@@ -116,11 +116,14 @@ handle_call(Call, _From, State) ->
   {reply, Call, State}.
 
 handle_cast(_Msg, State) -> {noreply, State}.
-  
+
 handle_info({'EXIT', Socket, normal}, State) when is_port(Socket) ->
   % lookup which table socket belonged to
   % assign new socket for table
   remove_socket(Socket, exit),
+  {noreply, State};
+handle_info({'EXIT', _, _}, State) ->
+  % something else exited.  Ignore it.  (from a linked process)
   {noreply, State};
 handle_info({tcp_closed, Socket}, State) when is_port(Socket) ->
 %  io:format("Closed for: ~p~n", [Socket]),
