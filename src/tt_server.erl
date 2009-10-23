@@ -58,6 +58,10 @@ handle_info({'EXIT', Pid, no_socket}, State) ->
   {noreply, State};
 
 handle_info({'EXIT', _Pid, normal}, State) ->
+  {noreply, State};
+
+handle_info({'EXIT', _, _}, State) ->
+  % something else exited.  Ignore it.  (from a linked process)
   {noreply, State}.
 
 set_sockopt(ListSock, CliSocket) ->
