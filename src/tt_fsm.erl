@@ -179,8 +179,7 @@ process_key(Key, KeySz) ->
   case hd(KeyList) of
     $[ -> case extract_table_name_str(KeyList) of
                {[], NKey} -> {0, [], NKey};
-            {TName, NKey} -> {length(TName) + 2, TName, NKey};
-                        _ -> {0, [], KeyList}
+            {TName, NKey} -> {length(TName) + 2, TName, NKey}
           end;
      _ -> {0, [], KeyList}
     end,
