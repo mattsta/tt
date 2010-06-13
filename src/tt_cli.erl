@@ -17,6 +17,9 @@
                 decode = fun(E) -> E end,
                 encode_prefix = fun(E) -> E end}).
 
+start_link(Host, Port) when is_tuple(Host), is_integer(Port) ->
+  gen_server:start_link(?MODULE, {Host, Port}, []).
+
 start_link(Name, Host, Port) when is_tuple(Host), is_integer(Port) ->
   gen_server:start_link({local, Name}, ?MODULE, {Host, Port}, []).
 
