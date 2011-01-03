@@ -48,12 +48,12 @@ Big table summary: keys are tri-valued.  A key is (Key, Column, 64-bit Timestamp
 64-bit timestamp to every key you store.  Each time you store something, your 
 new data is *appended* to
 the previous values so every prior value is available as well (i.e. it gives you the 3D
-time aspect of tables).  Because `tt_db` stores *everything* what you want most
-of the time is tt_db:get_latest (which returns the most-recent value stored to 
-the Key, Column you are requesting).
-You can see how tt_db, tyrant, the proxy, and big table fit together below:
-    % set_user/3 and get_user/2 are wrapper functions so we are not including
-    % the table name "user" in every call to get/set.
+time aspect of tables).  Because `tt_db` stores *everything* from the past, what you want most
+of the time is `tt_db:get_latest/3` which returns the most recent value stored to
+the Key, Column combination you are requesting.
+
+You can see how tt_db, tyrant, the proxy, and big table fit together below.  This is
+some code from a site I built around tiny table in late 2009:
     set_user(Username, Field, Value) ->
       tt_db:set("user", Username, Field, Value).  % timestamp auto-appended on set
 
@@ -68,11 +68,13 @@ You can see how tt_db, tyrant, the proxy, and big table fit together below:
     get_age(Username) -> get_user(Username, age).
     get_gender(Username) -> get_user(Username, gender).
 
-    set_status(Username, Status) -> setu(Username, status, Status).
-    % fwmkeys_vals_dated returns the last Count stored items *with* timestamps
+    set_status(Username, Status) -> set_user(Username, status, Status).
+
+    % fwmkeys_vals_dated returns the last Count items *with* timestamps
     get_status(Username, Count) ->
       Keys = tt_db:fwmkeys_vals_dated("user", Username ++ " status", Count),
       [{OldNow, binary_to_list(Val)} || {OldNow, Val} <- Keys].
+    % the 'Username ++ " status"' extracts the status column from the key Username.
 
     % fwmkeys returns the last Count (in this case 256) items *without* timestamps
     get_simple_quests() ->
