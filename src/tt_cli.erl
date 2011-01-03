@@ -1,3 +1,7 @@
+%% This is Ulf's Tokyo Tyrant client
+%% I cleaned up the syntax to make it more tolerable.
+%% Not sure why it's not at https://github.com/uwiger
+
 -module(tt_cli).
 
 -behaviour(gen_server).
