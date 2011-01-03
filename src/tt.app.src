@@ -4,7 +4,7 @@
    {modules, []},
    {mod, {tt_app, []}},
    {env, [{local_ip, {127,0,0,1}}]},
-   {registered, [tt_server, tt_pool]},
+   {registered, [tt_server, tt_pool, tt_db]},
    {applications, [kernel, stdlib]}
   ]
 }.
